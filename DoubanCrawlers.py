@@ -1,5 +1,8 @@
 #！-*- coding: utf-8 -*-  
 
+
+#http://pan.baidu.com/share/link?shareid=3283439014&uk=1914119230
+
 import re
 import urllib2
 import urllib
@@ -47,22 +50,23 @@ print u"""
 
 """
 
-print u"你要爬取哪个豆瓣相册"
-print u"例如： http://www.douban.com/photos/album/101360162/ "
+print u"您要爬取哪个豆瓣相册，请输入相册编号"
+print u"例如：网址为 http://www.douban.com/photos/album/101360162/的相册，编号为101360162 "
 
-albumurl = raw_input()
+albumurlnum = raw_input()
+albumurl = 'http://www.douban.com/photos/album/' + str(albumurlnum) + "/"
 
 stillFolderloop = True
 
 while stillFolderloop:
 
-	print u"你要保存在哪个盘？"
+	print u"您要保存在哪个盘？"
 	savedisk = raw_input()
-	print u"你要保存在" + savedisk.capitalize() + u"盘的哪个文件夹下"
+	print u"您要保存在" + savedisk.capitalize() + u"盘的哪个文件夹下"
 	savefolder = raw_input()
 	ifexist = os.path.exists(savedisk.capitalize() + r':\\' + savefolder)
 	if ifexist:
-		print u"您指定的目录已经存在了，爬去文件可能会覆盖同名文件，确认此文件夹吗？"
+		print u"您指定的目录已经存在了，爬取文件可能会覆盖同名文件，确认此文件夹吗？"
 		while True:
 			s = raw_input("y/n  ")
 			if s == 'y':
@@ -88,7 +92,7 @@ x = 1
 for i in jpgnumurl:
 	s=r'http://www.douban.com/photos/photo/'+ i + r'/'
 	jpgurl = getjpg(s)
-	print "geting jpg" + str(x)
+	print "getting jpg" + str(x)
 	urllib.urlretrieve(jpgurl[0], savedisk.capitalize() + r':\\' + savefolder + r'\\%s.jpg' %x)
 	x+=1
 
