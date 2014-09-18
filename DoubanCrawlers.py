@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-  
+#！-*- coding: utf-8 -*-  
 
 import re
 import urllib2
 import urllib
 import string
-
+import os
 
 def getjpgnumrul(url):
 
@@ -34,34 +34,82 @@ def getjpg(url):
 
 	return jpgrealurl
 
-	
-jpgnumurl=getjpgnumrul('http://www.douban.com/photos/album/128056017/')
-x = 0
+
+print u"""
+
+                                            ---豆瓣相册爬虫---
+
+                            此爬虫可以爬取制定豆瓣相册中的图片，并保存在制定文件夹中
+
+                            作者：杨柳
+
+                            版本：1.0
+
+"""
+
+print u"你要爬取哪个豆瓣相册"
+print u"例如： http://www.douban.com/photos/album/101360162/ "
+
+albumurl = raw_input()
+
+stillFolderloop = True
+
+while stillFolderloop:
+
+	print u"你要保存在哪个盘？"
+	savedisk = raw_input()
+	print u"你要保存在" + savedisk.capitalize() + u"盘的哪个文件夹下"
+	savefolder = raw_input()
+	ifexist = os.path.exists(savedisk.capitalize() + r':\\' + savefolder)
+	if ifexist:
+		print u"您指定的目录已经存在了，爬去文件可能会覆盖同名文件，确认此文件夹吗？"
+		while True:
+			s = raw_input("y/n  ")
+			if s == 'y':
+				stillFolderloop = False
+				break
+			elif s == 'n':
+				stillFolderloop = True
+				break
+			else:
+				pass
+	else:
+		stillFolderloop = False
+		os.makedirs(savedisk.capitalize() + r':\\' + savefolder)
+
+print u"文件将保存在" + savedisk.capitalize() + u"盘的" + savefolder + u"文件夹下"
+
+y = 0
+jpgnumurl=getjpgnumrul(albumurl)
+y += 18
+if jpgnumurl == []:
+	print 'no next page'
+x = 1
 for i in jpgnumurl:
 	s=r'http://www.douban.com/photos/photo/'+ i + r'/'
 	jpgurl = getjpg(s)
-	urllib.urlretrieve(jpgurl[0], r'F:\DoubanPhotos\%s.jpg' %x)
+	print "geting jpg" + str(x)
+	urllib.urlretrieve(jpgurl[0], savedisk.capitalize() + r':\\' + savefolder + r'\\%s.jpg' %x)
 	x+=1
 
-y = 18
 while True:
 	try:
-		jpgnumurl=getjpgnumrul('http://www.douban.com/photos/album/128056017/'+"?start=" + str(y))
+		print ""
+		print "getting page" + str(y/18 + 1)
+		jpgnumurl=getjpgnumrul(albumurl+"?start=" + str(y))
 		y += 18
-		print jpgnumurl
 		if jpgnumurl == []:
 			print 'no next page'
+			print "end"
 			break
-		x = 0
 		for i in jpgnumurl:
 			s=r'http://www.douban.com/photos/photo/'+ i + r'/'
-			print s
 			jpgurl = getjpg(s)
-			print jpgurl
-			urllib.urlretrieve(jpgurl[0], r'F:\DoubanPhotos\%s.jpg' %x)
+			print "getting jpg" + str(x)
+			urllib.urlretrieve(jpgurl[0], savedisk.capitalize() + r':\\' + savefolder + r'\\%s.jpg' %x)
 			x+=1
 	except:
-		print 'no next page'
+		print "problem!"
 		break
 
 
